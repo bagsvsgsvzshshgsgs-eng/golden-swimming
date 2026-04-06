@@ -1,0 +1,151 @@
+.schedule-section {
+  padding: 8rem 0;
+  background-color: #080808;
+  position: relative;
+  overflow: hidden;
+}
+
+.schedule-section::before {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 107, 0, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ===== SECTION HEADER (shared) ===== */
+.section-eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+/* ===== TABLE WRAP ===== */
+.schedule-table-wrap {
+  overflow-x: auto;
+  border-radius: 20px;
+  padding: 0.5rem;
+  transition: box-shadow 0.4s ease;
+}
+
+.schedule-table-wrap:hover {
+  box-shadow: 0 0 40px rgba(255, 107, 0, 0.06);
+}
+
+/* ===== TABLE ===== */
+.schedule-table {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.schedule-table th {
+  padding: 1.2rem 1.8rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--color-orange);
+  letter-spacing: 2px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 107, 0, 0.25);
+}
+
+.schedule-table td {
+  padding: 1.3rem 1.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+/* ===== ROW HOVER ===== */
+.schedule-row {
+  transition:
+    background 0.3s ease,
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.schedule-row:hover {
+  background: rgba(255, 107, 0, 0.04);
+}
+
+.schedule-row:hover .day-col {
+  color: var(--color-orange);
+}
+
+.schedule-row:hover .time-col {
+  color: #ddd;
+}
+
+/* Last row — no border */
+.schedule-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== DAY COLUMN ===== */
+.day-col {
+  font-weight: 800;
+  color: var(--color-white);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: color 0.3s ease;
+}
+
+.day-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ===== TIME COLUMN ===== */
+.time-col {
+  color: #ccc;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+/* ===== LEVEL BADGE ===== */
+.level-badge {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  background: rgba(255, 107, 0, 0.08);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  border-radius: 50px;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.schedule-row:hover .level-badge {
+  background: rgba(255, 107, 0, 0.15);
+  color: #fff;
+  border-color: rgba(255, 107, 0, 0.4);
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .schedule-section { padding: 5rem 0; }
+  .schedule-table th,
+  .schedule-table td { padding: 1rem; }
+  .day-col { font-size: 0.9rem; }
+}

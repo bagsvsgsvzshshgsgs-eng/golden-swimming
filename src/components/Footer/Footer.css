@@ -1,0 +1,123 @@
+.footer {
+  background-color: var(--color-black);
+  border-top: 1px solid rgba(255, 107, 0, 0.1);
+  padding-top: 5rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.footer-logo {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.footer-desc {
+  color: var(--color-text-muted);
+  margin-top: 1.5rem;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.footer h4 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  color: var(--color-white);
+  position: relative;
+  display: inline-block;
+}
+
+.footer h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 40px;
+  height: 2px;
+  background-color: var(--color-orange);
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+  color: var(--color-text-muted);
+}
+
+.footer-links a:hover {
+  color: var(--color-orange);
+  padding-left: 5px;
+}
+
+.footer-contact p {
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background: var(--color-orange);
+  border-color: var(--color-orange);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+ @media (max-width: 768px) {
+   .footer-content {
+     grid-template-columns: 1fr;
+     gap: 2rem;
+   }
+ }
+
+.admin-link-footer {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.admin-link-footer:hover {
+  color: var(--color-orange);
+  opacity: 1;
+}
+

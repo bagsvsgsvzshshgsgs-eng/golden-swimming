@@ -1,0 +1,189 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem 0;
+  z-index: 1000;
+  transition: padding 0.4s ease, background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.navbar.scrolled {
+  background: rgba(5, 5, 5, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(255, 107, 0, 0.18);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  display: flex;
+  align-items: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
+}
+
+.logo:hover {
+  transform: scale(1.08) rotate(-2deg);
+  filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.5));
+}
+
+.navbar-logo {
+  height: 65px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ===== NAV LINKS ===== */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.nav-links a:not(.btn-join) {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  position: relative;
+  color: var(--color-white);
+  transition: color 0.3s ease;
+}
+
+/* Animated underline on hover */
+.nav-links a:not(.btn-join)::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-orange);
+  border-radius: 2px;
+  transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-links a:not(.btn-join):hover {
+  color: var(--color-orange);
+}
+
+.nav-links a:not(.btn-join):hover::after {
+  width: 100%;
+}
+
+/* ===== JOIN BTN ===== */
+.btn-join {
+  background: transparent;
+  color: var(--color-orange);
+  border: 2px solid var(--color-orange);
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.btn-join::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+  z-index: -1;
+}
+
+.btn-join:hover {
+  color: #fff;
+  box-shadow: 0 0 20px var(--color-orange-glow);
+}
+
+.btn-join:hover::before {
+  transform: scaleX(1);
+}
+
+/* ===== MOBILE MENU BTN ===== */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--color-white);
+  font-size: 1.4rem;
+  cursor: pointer;
+  z-index: 2000;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+  border-color: var(--color-orange);
+  background: rgba(255, 107, 0, 0.08);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: #080808;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-left: 1px solid rgba(255, 107, 0, 0.2);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.6);
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  /* Stagger nav items on mobile */
+  .nav-links a {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+  }
+
+  .nav-links.active a {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .nav-links.active a:nth-child(1) { transition-delay: 0.05s; }
+  .nav-links.active a:nth-child(2) { transition-delay: 0.1s; }
+  .nav-links.active a:nth-child(3) { transition-delay: 0.15s; }
+  .nav-links.active a:nth-child(4) { transition-delay: 0.2s; }
+  .nav-links.active a:nth-child(5) { transition-delay: 0.25s; }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+}
