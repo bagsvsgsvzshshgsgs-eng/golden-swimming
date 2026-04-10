@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FaUserCog } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -20,20 +21,33 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  const handleHashClick = (e, targetId) => {
+    setIsMobileMenuOpen(false);
+    if (location.pathname === '/') {
+      e.preventDefault();
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="container nav-content">
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" onClick={() => window.scrollTo(0, 0)}>
           <img src="/logo.png" alt="GSA Logo" className="navbar-logo" />
         </Link>
         <nav className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
-          <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-          <Link to="/store" onClick={() => setIsMobileMenuOpen(false)}>Store</Link>
+          <Link to="/" onClick={() => { setIsMobileMenuOpen(false); window.scrollTo(0, 0); }}>Home</Link>
           <Link to="/gallery" onClick={() => setIsMobileMenuOpen(false)}>Gallery</Link>
-          <a href="/#features" onClick={() => setIsMobileMenuOpen(false)}>Programs</a>
-          <a href="/#about" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-          <a href="/#classes" onClick={() => setIsMobileMenuOpen(false)}>Schedule</a>
-          <a href="/#contact" className="btn-join" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
+          <a href="/#about" onClick={(e) => handleHashClick(e, 'about')}>About</a>
+          <a href="/#classes" onClick={(e) => handleHashClick(e, 'classes')}>Programs</a>
+          <Link to="/store" onClick={() => setIsMobileMenuOpen(false)}>Store</Link>
+          <a href="/#contact" className="btn-join" onClick={(e) => handleHashClick(e, 'contact')}>Contact Us</a>
+          <Link to="/admin" className="admin-btn" onClick={() => setIsMobileMenuOpen(false)} aria-label="Admin Dashboard">
+            <FaUserCog size={24} />
+          </Link>
         </nav>
         
         <button 

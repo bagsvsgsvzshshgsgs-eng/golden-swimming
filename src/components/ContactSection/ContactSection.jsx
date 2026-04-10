@@ -1,12 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ContactSection.css';
 
+const DEFAULT_CONTACT = {
+  location: '6th October, Bashayer',
+  whatsapp: '+20 120 333 3204',
+  whatsappNumber: '201203333204',
+  hours: 'Mon – Fri: 4 PM – 9 PM',
+};
+
+const getContactInfo = () => {
+  try {
+    const stored = localStorage.getItem('gsa_contact_info');
+    return stored ? { ...DEFAULT_CONTACT, ...JSON.parse(stored) } : DEFAULT_CONTACT;
+  } catch { return DEFAULT_CONTACT; }
+};
+
 const ContactSection = () => {
-  const [formData, setFormData] = useState({ name: '', phone: '', level: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', age: '', level: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [contactInfo, setContactInfo] = useState(getContactInfo);
   const sectionRef = useRef(null);
   const leftRef    = useRef(null);
   const rightRef   = useRef(null);
+
+  useEffect(() => {
+    const onUpdate = () => setContactInfo(getContactInfo());
+    window.addEventListener('contact-updated', onUpdate);
+    return () => window.removeEventListener('contact-updated', onUpdate);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -30,16 +51,17 @@ const ContactSection = () => {
       `🏊‍♂️ *طلب تسجيل جديد - Golden Swimming Academy*\n\n` +
       `👤 الاسم: ${formData.name}\n` +
       `📱 الموبايل: ${formData.phone}\n` +
+      `🎂 السن: ${formData.age}\n` +
       `🎯 المستوى: ${formData.level}\n` +
       (formData.message ? `💬 ملاحظات: ${formData.message}\n` : '');
 
-    const whatsapp = '201203333204';
+    const whatsapp = contactInfo.whatsappNumber || '201203333204';
     window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
 
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
-      setFormData({ name: '', phone: '', level: '', message: '' });
+      setFormData({ name: '', phone: '', age: '', level: '', message: '' });
     }, 4000);
   };
 
@@ -63,21 +85,21 @@ const ContactSection = () => {
               <span className="contact-icon">📍</span>
               <div>
                 <strong>Location</strong>
-                <p>6th October, Bashayer</p>
+                <p>{contactInfo.location}</p>
               </div>
             </div>
             <div className="contact-item">
               <span className="contact-icon">📱</span>
               <div>
                 <strong>WhatsApp</strong>
-                <p>+20 120 333 3204</p>
+                <p>{contactInfo.whatsapp}</p>
               </div>
             </div>
             <div className="contact-item">
               <span className="contact-icon">🕐</span>
               <div>
                 <strong>Working Hours</strong>
-                <p>Mon – Fri: 4 PM – 9 PM</p>
+                <p>{contactInfo.hours}</p>
               </div>
             </div>
           </div>
@@ -120,15 +142,30 @@ const ContactSection = () => {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label>🎯 Swimming Level</label>
-                <select name="level" value={formData.level} onChange={handleChange} required>
-                  <option value="" disabled>Select your level...</option>
-                  <option value="Beginner">🏊 Beginner — I'm just starting out</option>
-                  <option value="Intermediate">⚡ Intermediate — I know the basics</option>
-                  <option value="Advanced">🏆 Advanced — I compete / train seriously</option>
-                  <option value="Kids">👦 Kids Program (Under 12)</option>
-                </select>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>🎂 Age</label>
+                  <input
+                    type="number"
+                    name="age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    required
+                    placeholder="e.g. 10"
+                    min="3"
+                    max="80"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>🎯 Swimming Level</label>
+                  <select name="level" value={formData.level} onChange={handleChange} required>
+                    <option value="" disabled>Select your level...</option>
+                    <option value="Beginner">🏊 Beginner — I'm just starting out</option>
+                    <option value="Intermediate">⚡ Intermediate — I know the basics</option>
+                    <option value="Advanced">🏆 Advanced — I compete / train seriously</option>
+                    <option value="Kids">👦 Kids Program (Under 12)</option>
+                  </select>
+                </div>
               </div>
 
               <div className="form-group">

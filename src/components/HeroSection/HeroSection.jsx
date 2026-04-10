@@ -32,6 +32,24 @@ const HeroSection = () => {
 
   return (
     <section id="home" className="hero-section">
+      <svg width="0" height="0" style={{ position: 'absolute', zIndex: -1 }}>
+        <defs>
+          <filter id="water-ripple" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.015" numOctaves="3" result="noise" />
+            <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" in="noise" result="coloredNoise" />
+            <feComponentTransfer in="coloredNoise" result="transNoise">
+              <feFuncA type="linear" slope="0.5" />
+            </feComponentTransfer>
+            <feOffset dx="0" dy="0" in="transNoise" result="offsetNoise">
+              <animate attributeName="dx" values="0; 40; 0" dur="20s" repeatCount="indefinite" />
+              <animate attributeName="dy" values="0; 30; 0" dur="25s" repeatCount="indefinite" />
+            </feOffset>
+            <feDisplacementMap in="SourceGraphic" in2="offsetNoise" scale="20" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+      
+      <div className="hero-bg" />
       <div className="hero-overlay" />
       <div className="hero-particles">
         {[...Array(12)].map((_, i) => (
@@ -52,7 +70,6 @@ const HeroSection = () => {
         </p>
         <div className="hero-actions reveal-hero" ref={actionsRef}>
           <button className="btn-primary" onClick={() => scrollTo('contact')}>Start Training</button>
-          <button className="btn-secondary" onClick={() => scrollTo('features')}>View Programs</button>
         </div>
 
         <div className="hero-stats" ref={badge2Ref}>
@@ -73,9 +90,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      <div className="hero-scroll-hint">
-        <span />
-      </div>
     </section>
   );
 };

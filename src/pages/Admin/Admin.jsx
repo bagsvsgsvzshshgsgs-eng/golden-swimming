@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getScheduleData } from '../../components/ScheduleSection/ScheduleSection';
 import './Admin.css';
 
 const MOCK_STATS = [
@@ -27,9 +28,12 @@ const Chart = () => (
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [adminPassword, setAdminPassword] = useState('admin123');
+  const [adminEmail, setAdminEmail] = useState('goldenswimmingacademy@gmail.com');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [schedule, setSchedule] = useState([]);
   const [loginError, setLoginError] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState({ name: '', price: '', cat: 'Accessories', stock: '', image: '' });
@@ -46,6 +50,55 @@ const Admin = () => {
   // Settings state
   const [passForm, setPassForm] = useState({ current: '', next: '', confirm: '' });
   const [passStatus, setPassStatus] = useState({ msg: '', type: '' });
+
+  // Contact Info state
+  const DEFAULT_CONTACT = {
+    location: '6th October, Bashayer',
+    whatsapp: '+20 120 333 3204',
+    whatsappNumber: '201203333204',
+    hours: 'Mon – Fri: 4 PM – 9 PM',
+  };
+  const loadContact = () => {
+    try {
+      const stored = localStorage.getItem('gsa_contact_info');
+      return stored ? { ...DEFAULT_CONTACT, ...JSON.parse(stored) } : { ...DEFAULT_CONTACT };
+    } catch { return { ...DEFAULT_CONTACT }; }
+  };
+  const [contactForm, setContactForm] = useState(loadContact);
+  const [contactStatus, setContactStatus] = useState({ msg: '', type: '' });
+
+  const handleSaveContact = (e) => {
+    e.preventDefault();
+    localStorage.setItem('gsa_contact_info', JSON.stringify(contactForm));
+    window.dispatchEvent(new Event('contact-updated'));
+    setContactStatus({ msg: 'Contact info updated successfully! ✅', type: 'success' });
+    setTimeout(() => setContactStatus({ msg: '', type: '' }), 3000);
+  };
+
+  useEffect(() => {
+    setSchedule(getScheduleData());
+  }, []);
+
+  const handleSaveSchedule = () => {
+    localStorage.setItem('gsa_schedule', JSON.stringify(schedule));
+    window.dispatchEvent(new Event('schedule-updated'));
+    alert('Schedule saved successfully!');
+  };
+
+  const handleScheduleChange = (index, field, value) => {
+    const updated = [...schedule];
+    updated[index][field] = value;
+    setSchedule(updated);
+  };
+
+  const handleAddProgramRow = () => {
+    setSchedule([...schedule, { day: 'New Day', time: '0:00 - 0:00', level: 'Level Name', icon: '❓' }]);
+  };
+
+  const handleDeleteProgramRow = (index) => {
+    const updated = schedule.filter((_, i) => i !== index);
+    setSchedule(updated);
+  };
 
   const handleImageChange = (e, target) => {
     const file = e.target.files[0];
@@ -79,11 +132,11 @@ const Admin = () => {
   };
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === adminPassword) {
+    if (email === adminEmail && password === adminPassword) {
       setIsLoggedIn(true);
       setLoginError('');
     } else {
-      setLoginError('Incorrect password. Please try again.');
+      setLoginError('Incorrect email or password. Please try again.');
     }
   };
 
@@ -115,16 +168,26 @@ const Admin = () => {
           <div className="login-header">
             <img src="/logo.png" alt="GSA Logo" className="login-logo" />
             <h2>Admin Portal</h2>
-            <p>Enter password to access the dashboard</p>
+            <p>Enter your email and password to access the dashboard</p>
           </div>
           <form onSubmit={handleLogin} className="login-form">
+            <div className="form-group">
+              <input 
+                type="email" 
+                placeholder="Email Address" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoFocus
+                required
+              />
+            </div>
             <div className="form-group">
               <input 
                 type="password" 
                 placeholder="Password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoFocus
+                required
               />
             </div>
             {loginError && <p className="error-text">{loginError}</p>}
@@ -163,6 +226,18 @@ const Admin = () => {
             🏆 Performance
           </button>
           <button 
+             className={`nav-item ${activeTab === 'schedule' ? 'active' : ''}`}
+             onClick={() => setActiveTab('schedule')}
+          >
+            📅 Programs
+          </button>
+          <button 
+             className={`nav-item ${activeTab === 'contact-info' ? 'active' : ''}`}
+             onClick={() => setActiveTab('contact-info')}
+          >
+            📞 Contact Info
+          </button>
+          <button 
              className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
              onClick={() => setActiveTab('settings')}
           >
@@ -185,7 +260,12 @@ const Admin = () => {
           {activeTab === 'dashboard' && (
             <div className="dashboard-view">
               <div className="stats-grid">
-                {MOCK_STATS.map((stat, i) => (
+                {[
+                  { label: 'Total Sales', value: 'EGP 42,500', icon: '💰', trend: '+12.5%' },
+                  { label: 'Products', value: products.length, icon: '🛒', trend: 'In Stock' },
+                  { label: 'Honored Athletes', value: honoredMembers.length, icon: '🏆', trend: 'Hall of Fame' },
+                  { label: 'Members', value: '128', icon: '🏊', trend: '+8.2%' },
+                ].map((stat, i) => (
                   <div key={i} className="stat-card glass-panel">
                     <div className="stat-icon">{stat.icon}</div>
                     <div className="stat-info">
@@ -296,6 +376,104 @@ const Admin = () => {
               {honoredMembers.length === 0 && (
                 <div className="empty-state">No athletes honored yet.</div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'schedule' && (
+            <div className="schedule-admin-view animate-fade">
+              <div className="view-header">
+                <h3>Manage Training Programs</h3>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button className="btn-add" onClick={handleSaveSchedule}>💾 Save Changes</button>
+                  <button className="btn-add gold-btn" onClick={handleAddProgramRow} style={{ background: '#ff6b00' }}>+ Add Day</button>
+                </div>
+              </div>
+              
+              <div className="schedule-editor">
+                {schedule.map((item, i) => (
+                  <div key={i} className="schedule-edit-row glass-panel" style={{ display: 'flex', gap: '1rem', padding: '1rem', marginBottom: '1rem', alignItems: 'center' }}>
+                    <div className="form-group" style={{ margin: 0, width: '60px' }}>
+                      <input type="text" value={item.icon} onChange={(e) => handleScheduleChange(i, 'icon', e.target.value)} title="Icon" />
+                    </div>
+                    <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                      <input type="text" value={item.day} onChange={(e) => handleScheduleChange(i, 'day', e.target.value)} placeholder="Day" />
+                    </div>
+                    <div className="form-group" style={{ margin: 0, flex: 1.5 }}>
+                      <input type="text" value={item.time} onChange={(e) => handleScheduleChange(i, 'time', e.target.value)} placeholder="Time" />
+                    </div>
+                    <div className="form-group" style={{ margin: 0, flex: 1.5 }}>
+                      <input type="text" value={item.level} onChange={(e) => handleScheduleChange(i, 'level', e.target.value)} placeholder="Level/Focus" />
+                    </div>
+                    <button 
+                      className="btn-del" 
+                      onClick={() => handleDeleteProgramRow(i)}
+                      style={{ padding: '0.5rem', background: 'rgba(255, 68, 68, 0.1)', color: '#ff4444', border: '1px solid rgba(255,68,68,0.2)', borderRadius: '4px' }}
+                      title="Delete Entry"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'contact-info' && (
+            <div className="settings-view animate-fade">
+              <div className="settings-container glass-panel">
+                <div className="settings-header">
+                  <h3>📞 Contact Info</h3>
+                  <p>Update your academy’s public contact details</p>
+                </div>
+                <form onSubmit={handleSaveContact} className="password-change-form">
+                  <div className="form-group">
+                    <label>📍 Location</label>
+                    <input
+                      type="text"
+                      value={contactForm.location}
+                      onChange={e => setContactForm({ ...contactForm, location: e.target.value })}
+                      placeholder="e.g. 6th October, Bashayer"
+                    />
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>📱 WhatsApp Display Text</label>
+                      <input
+                        type="text"
+                        value={contactForm.whatsapp}
+                        onChange={e => setContactForm({ ...contactForm, whatsapp: e.target.value })}
+                        placeholder="+20 120 333 3204"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>🔢 WhatsApp Number (no +)</label>
+                      <input
+                        type="text"
+                        value={contactForm.whatsappNumber}
+                        onChange={e => setContactForm({ ...contactForm, whatsappNumber: e.target.value })}
+                        placeholder="201203333204"
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>🕐 Working Hours</label>
+                    <input
+                      type="text"
+                      value={contactForm.hours}
+                      onChange={e => setContactForm({ ...contactForm, hours: e.target.value })}
+                      placeholder="Mon – Fri: 4 PM – 9 PM"
+                    />
+                  </div>
+                  {contactStatus.msg && (
+                    <div className={`status-msg ${contactStatus.type}`}>
+                      {contactStatus.msg}
+                    </div>
+                  )}
+                  <button type="submit" className="btn-primary update-pass-btn">
+                    Save Contact Info 💾
+                  </button>
+                </form>
+              </div>
             </div>
           )}
 

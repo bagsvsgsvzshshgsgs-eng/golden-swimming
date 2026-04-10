@@ -79,4 +79,6 @@ const ScheduleSection = () => {
   );
 };
 
+export const getScheduleData = () => scheduleData;
+
 export default ScheduleSection;

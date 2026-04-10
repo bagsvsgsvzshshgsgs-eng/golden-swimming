@@ -4,13 +4,27 @@
   min-height: 700px;
   display: flex;
   align-items: center;
+  background-color: #050505;
+  color: white;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: -15px; /* Offset to hide edges from distortion */
   background-image: url('/images/hero.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  background-color: #050505;
-  color: white;
-  overflow: hidden;
+  filter: url(#water-ripple);
+  z-index: 0;
+  animation: waterMotion 30s infinite alternate ease-in-out;
+}
+
+@keyframes waterMotion {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.05) translate(-10px, -5px); }
+  100% { transform: scale(1) translate(0, 0); }
 }
 
 /* ===== OVERLAY ===== */
